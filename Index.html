@@ -1,0 +1,241 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jolani</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #001f3f;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            color: #001f3f;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom {
+            background-color: #001f3f;
+            color: white;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+        .header, .footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .footer {
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
+    <script type="text/babel">
+        const users = [
+            {
+                id: 1,
+                name: "Mr B. Makathini",
+                age: 37,
+                gender: "Male",
+                career: "Commutation Manager",
+                company: "Assistive Tech Solutions Inc",
+                seeking: "Female",
+                location: "Cape Town",
+                profile_picture: "(link unavailable)"
+            },
+            {
+                id: 2,
+                name: "Ms M. Anderson",
+                age: 28,
+                gender: "Female",
+                career: "British Billionaire",
+                company: "Anderson Inc",
+                seeking: "Male",
+                location: "London",
+                profile_picture: "(link unavailable)"
+            }
+        ];
+
+        const MAX_USERS = 50;
+
+        function registerUser(user) {
+            if (users.length < MAX_USERS) {
+                users.push(user);
+                return { success: true, message: "User registered successfully." };
+            } else {
+                return { success: false, message: "User limit reached. Cannot register more users." };
+            }
+        }
+
+        function getUsers() {
+            return users;
+        }
+
+        function App() {
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>Welcome to Jolani</h1>
+                    </div>
+                    <a href="#/profile" className="btn btn-custom btn-block">View Profile</a>
+                    <a href="#/match" className="btn btn-custom btn-block">Find Matches</a>
+                    <a href="#/chat" className="btn btn-custom btn-block">Chat</a>
+                    <div className="footer">
+                        <p>&copy; 2024 Jolani. All Rights Reserved.</p>
+                    </div>
+                </div>
+            );
+        }
+
+        function Profile() {
+            const [profile, setProfile] = React.useState({
+                name: '',
+                age: '',
+                gender: '',
+                career: '',
+                company: '',
+                seeking: '',
+                location: '',
+                profile_picture: ''
+            });
+
+            const handleChange = (e) => {
+                const { name, value } = e.target;
+                setProfile(prevProfile => ({ ...prevProfile, [name]: value }));
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                const result = registerUser(profile);
+                alert(result.message);
+            };
+
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>Profile</h1>
+                    </div>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label>Name</label>
+                            <input type="text" name="name" className="form-control" value={profile.name} onChange={handleChange} required />
+                        </div>
+                        <div className="form-group">
+                            <label>Age</label>
+                            <input type="number" name="age" className="form-control" value={profile.age} onChange={handleChange} required />
+                        </div>
+                        <div className="form-group">
+                            <label>Gender</label>
+                            <input type="text" name="gender" className="form-control" value={profile.gender} onChange={handleChange} required />
+                        </div>
+                        <div className="form-group">
+                            <label>Career</label>
+                            <input type="text" name="career" className="form-control" value={profile.career} onChange={handleChange} required />
+                        </div>
+                        <div className="form-group">
+                            <label>Company</label>
+                            <input type="text" name="company" className="form-control" value={profile.company} onChange={handleChange} required />
+                        </div>
+                        <div className="form-group">
+                            <label>Seeking</label>
+                            <input type="text" name="seeking" className="form-control" value={profile.seeking} onChange={handleChange} required />
+                        </div>
+                        <div className="form-group">
+                            <label>Location</label>
+                            <input type="text" name="location" className="form-control" value={profile.location} onChange={handleChange} required />
+                        </div>
+                        <div className="form-group">
+                            <label>Profile Picture URL</label>
+                            <input type="text" name="profile_picture" className="form-control" value={profile.profile_picture} onChange={handleChange} required />
+                        </div>
+                        <button type="submit" className="btn btn-custom btn-block">Save Profile</button>
+                    </form>
+                </div>
+            );
+        }
+
+        function Match() {
+            const [matches, setMatches] = React.useState([]);
+            const [currentMatch, setCurrentMatch] = React.useState(null);
+
+            React.useEffect(() => {
+                const users = getUsers();
+                setMatches(users);
+                setCurrentMatch(users[0]);
+            }, []);
+
+            const handleRefresh = () => {
+                const randomIndex = Math.floor(Math.random() * matches.length);
+                setCurrentMatch(matches[randomIndex]);
+            };
+
+            const handleAccept = () => {
+                alert(`You have accepted the match with ${currentMatch.name}`);
+            };
+
+            const handleReject = () => {
+                handleRefresh();
+            };
+
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>Find Matches</h1>
+                    </div>
+                    {currentMatch ? (
+                        <div>
+                            <h2>{currentMatch.name}</h2>
+                            <p>{currentMatch.career} at {currentMatch.company}</p>
+                            <p>Location: {currentMatch.location}</p>
+                            <button onClick={handleAccept} className="btn btn-success btn-block">Accept</button>
+                            <button onClick={handleReject} className="btn btn-danger btn-block">Reject</button>
+                            <button onClick={handleRefresh} className="btn btn-warning btn-block">Refresh</button>
+                        </div>
+                    ) : (
+                        <p>No matches found.</p>
+                    )}
+                </div>
+            );
+        }
+
+        function Chat() {
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>Chat</h1>
+                    </div>
+                </div>
+            );
+        }
+
+        function Router() {
+            const [route, setRoute] = React.useState(window.location.hash.substr(1));
+
+            React.useEffect(() => {
+                const onHashChange = () => setRoute(window.location.hash.substr(1));
+                window.addEventListener("hashchange", onHashChange);
+                return () => window.removeEventListener("hashchange", onHashChange);
+            }, []);
+
+            let Component;
+            switch (route) {
+                case '/profile':
+                    Component = Profile;
+                    break;
+                case '/match':
+                    Component = Match;
+                    break;
+                case '/chat':
+                    Component = Chat
